@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="be_classwork">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lesson_02/code/src/app/libs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lesson_02/code/src/app/libs" recursive="false" />
+  </library>
+</component>
