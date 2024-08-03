@@ -22,14 +22,37 @@ public class CarServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     //super.doGet(req, resp);
-    List<Car> cars = repository.getAll();
-    cars.forEach(x -> {
-      try {
-        resp.getWriter().write(x.toString() + "\n");
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+
+    String idParam = req.getParameter("id");
+    try {
+      if (idParam != null) {
+        Long id = Long.parseLong(idParam);
+        Car car = repository.getById(id);
+        if (car != null) {
+          resp.getWriter().write(car.toString() + "\n");
+        } else {
+          resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+          resp.getWriter().write("Car not found");
+        }
+      } else {
+        //Fetch all cars
+        List<Car> cars = repository.getAll();
+        cars.forEach(x -> {
+          try {
+            resp.getWriter().write(x.toString() + "\n");
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        });
+
       }
-    });
+    } catch (NumberFormatException e) {
+      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      resp.getWriter().write("Invalid parameter: id must be a number");
+    } catch (Exception e) {
+      resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      resp.getWriter().write("An error occurred while fetching the car(s)");
+    }
   }
 
   @Override
@@ -50,11 +73,6 @@ public class CarServlet extends HttpServlet {
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String idParam = req.getParameter("id");
-    if (idParam == null) {
-      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      resp.getWriter().write("Missing parameter: id");
-      return;
-    }
 
     try {
       Long id = Long.parseLong(idParam);

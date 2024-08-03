@@ -60,14 +60,27 @@ private Connection getConnection() {
 
   @Override
   public Car getById(Long id) {
-    try(Connection connection = getConnection()) {
+    Car car = null; // Declare the Car object outside the try block
 
+    String query = "SELECT * FROM cars WHERE id=?";
 
+    try (Connection connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
 
+      statement.setLong(1, id);
+      ResultSet resultSet = statement.executeQuery();
+
+      if (resultSet.next()) { // Check if the result set has data
+        String brand = resultSet.getString("brand");
+        BigDecimal price = resultSet.getBigDecimal("price");
+        int year = resultSet.getInt("year");
+        car = new Car(id, price, brand, year); // Assign the Car object
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return null;
+
+    return car; // Return the Car object
   }
 
   @Override

@@ -13,14 +13,13 @@ public class Car {
   private int year;
 
   public Car(String brand, BigDecimal price,  int year) {
-
     this.brand = brand;
     this.price = price;
     this.year = year;
   }
 
+  //empty constructor
   public Car() {
-
   }
 
   public Car(Long id, BigDecimal price, String brand, int year) {

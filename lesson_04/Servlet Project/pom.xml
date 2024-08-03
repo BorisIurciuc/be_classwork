@@ -17,12 +17,15 @@
   </properties>
 
   <dependencies>
+    <!-- servlet library, hears url!, works with web server, ex. tomcat -->
+
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
+    <!-- jackson library, to pack and unpack jsons -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>

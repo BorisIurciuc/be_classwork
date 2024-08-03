@@ -3,17 +3,19 @@ package app.repository;
 import app.domain.Car;
 import java.util.List;
 
+//CRUD
+
 public interface CarRepository {
 
-  Car save(Car car);
+  Car save(Car car); //creat
 
-  Car getById(Long id);
+  Car getById(Long id); //read
 
-  List<Car> getAll();
+  List<Car> getAll(); //read
 
-  Car updateCar();
+  Car updateCar(); //update
 
-  void delete(Long id);
+  void delete(Long id); //delete
 
 }
 
