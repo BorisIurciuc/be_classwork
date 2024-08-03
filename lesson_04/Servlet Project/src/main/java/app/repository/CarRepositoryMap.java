@@ -41,7 +41,7 @@ public class CarRepositoryMap implements CarRepository{
   }
 
   @Override
-  public Car updateCar() {
+  public Car updateCar(Long currentId, BigDecimal price) {
     return null;
   }
 

@@ -20,7 +20,6 @@ public class CarRepositoryDB implements CarRepository {
 private Connection getConnection() {
 
   try {
-
     Class.forName(DB_DRIVER_PATH);
 
     //// http://10.1.2.3:8080/carss?id=3
@@ -32,7 +31,6 @@ private Connection getConnection() {
 
   } catch (Exception e) {
     throw new RuntimeException(e);
-
   }
 }
 
@@ -61,7 +59,6 @@ private Connection getConnection() {
   @Override
   public Car getById(Long id) {
     Car car = null; // Declare the Car object outside the try block
-
     String query = "SELECT * FROM cars WHERE id=?";
 
     try (Connection connection = getConnection();
@@ -104,14 +101,41 @@ private Connection getConnection() {
   }
 
   @Override
-  public Car updateCar() {
-    try(Connection connection = getConnection()) {
+  public Car updateCar(Long id, BigDecimal price) {
+    Car car = null;
+    String updateQuery = "UPDATE cars SET price=? WHERE id=?";
+    String selectQuery = "SELECT * FROM cars WHERE id=?";
 
+    try (Connection connection = getConnection()) {
+      // Update the car's price
+      try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+        updateStatement.setBigDecimal(1, price);
+        updateStatement.setLong(2, id);
+
+        int result = updateStatement.executeUpdate();
+
+        if (result > 0) {
+          // Retrieve the updated car details
+          try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+            selectStatement.setLong(1, id);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+              String brand = resultSet.getString("brand");
+              BigDecimal updatedPrice = resultSet.getBigDecimal("price");
+              int year = resultSet.getInt("year");
+              car = new Car(id, updatedPrice, brand, year); // Use correct parameters
+            }
+          }
+        }
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return null;
+
+    return car;
   }
+
 
   @Override
   public void delete(Long id) {
