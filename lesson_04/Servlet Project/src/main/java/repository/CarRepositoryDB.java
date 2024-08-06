@@ -1,8 +1,12 @@
-package app.repository;
+package repository;
 
-import app.constants.Constants;
-import app.domain.Car;
+import static constants.Constants.DB_ADDRESS;
+import static constants.Constants.DB_DRIVER_PATH;
+import static constants.Constants.DB_NAME;
+import static constants.Constants.DB_PASSWORD;
+import static constants.Constants.DB_USERNAME;
 
+import domain.Car;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,8 +15,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import static app.constants.Constants.*;
 
 public class CarRepositoryDB implements CarRepository {
 
@@ -58,26 +60,25 @@ private Connection getConnection() {
 
   @Override
   public Car getById(Long id) {
-    Car car = null; // Declare the Car object outside the try block
-    String query = "SELECT * FROM cars WHERE id=?";
+    try (Connection connection = getConnection()) {
 
-    try (Connection connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement(query)) {
+      String query = String.format("SELECT * FROM car WHERE id = %d;", id);
 
-      statement.setLong(1, id);
-      ResultSet resultSet = statement.executeQuery();
+      Statement statement = connection.createStatement();
+      ResultSet resultSet = statement.executeQuery(query);
 
-      if (resultSet.next()) { // Check if the result set has data
+      if (resultSet.next()) {
         String brand = resultSet.getString("brand");
         BigDecimal price = resultSet.getBigDecimal("price");
         int year = resultSet.getInt("year");
-        car = new Car(id, price, brand, year); // Assign the Car object
+
+        return new Car(id, brand, price, year);
       }
+
+      return null;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-
-    return car; // Return the Car object
   }
 
   @Override
@@ -92,7 +93,7 @@ private Connection getConnection() {
         String brand = resultSet.getString("brand");
         BigDecimal price = resultSet.getBigDecimal("price");
         int year = resultSet.getInt("year");
-        cars.add(new Car(id, price, brand, year));
+        cars.add(new Car(id, brand, price, year));
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -101,41 +102,17 @@ private Connection getConnection() {
   }
 
   @Override
-  public Car updateCar(Long id, BigDecimal price) {
-    Car car = null;
-    String updateQuery = "UPDATE cars SET price=? WHERE id=?";
-    String selectQuery = "SELECT * FROM cars WHERE id=?";
-
+  public Car update(Car car) {
     try (Connection connection = getConnection()) {
-      // Update the car's price
-      try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-        updateStatement.setBigDecimal(1, price);
-        updateStatement.setLong(2, id);
+      // TODO домашнее задание (изменению подлежит только цена)
+      String query = String.format("UPDATE car SET price = %s WHERE id = %d;", car.getPrice(), car.getId());
+      connection.createStatement().execute(query);
 
-        int result = updateStatement.executeUpdate();
-
-        if (result > 0) {
-          // Retrieve the updated car details
-          try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
-            selectStatement.setLong(1, id);
-            ResultSet resultSet = selectStatement.executeQuery();
-
-            if (resultSet.next()) {
-              String brand = resultSet.getString("brand");
-              BigDecimal updatedPrice = resultSet.getBigDecimal("price");
-              int year = resultSet.getInt("year");
-              car = new Car(id, updatedPrice, brand, year); // Use correct parameters
-            }
-          }
-        }
-      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-
     return car;
   }
-
 
   @Override
   public void delete(Long id) {

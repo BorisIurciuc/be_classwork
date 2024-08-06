@@ -1,4 +1,4 @@
-package app.constants;
+package constants;
 
 public interface Constants {
 

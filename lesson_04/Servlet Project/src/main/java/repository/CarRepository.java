@@ -1,7 +1,6 @@
-package app.repository;
+package repository;
 
-import app.domain.Car;
-import java.math.BigDecimal;
+import domain.Car;
 import java.util.List;
 
 //CRUD
@@ -14,7 +13,7 @@ public interface CarRepository {
 
   List<Car> getAll(); //read
 
-  Car updateCar(Long id, BigDecimal price); //update
+  Car update(Car car);
 
   void delete(Long id); //delete
 

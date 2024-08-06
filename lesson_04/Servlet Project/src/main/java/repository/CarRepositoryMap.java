@@ -1,6 +1,6 @@
-package app.repository;
+package repository;
 
-import app.domain.Car;
+import domain.Car;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Boris Iurciuc (cohort36)
  */
-public class CarRepositoryMap implements CarRepository{
+public class CarRepositoryMap implements CarRepository {
 
   private final Map<Long, Car> database = new HashMap<>();
   private long currentId;
@@ -41,7 +41,7 @@ public class CarRepositoryMap implements CarRepository{
   }
 
   @Override
-  public Car updateCar(Long currentId, BigDecimal price) {
+  public Car update(Car car) {
     return null;
   }
 

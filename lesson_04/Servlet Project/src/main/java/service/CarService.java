@@ -1,7 +1,6 @@
-package app.service;
+package service;
 
-import app.domain.Car;
-
+import domain.Car;
 import java.util.List;
 
 public interface CarService {
